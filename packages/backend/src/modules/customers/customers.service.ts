@@ -203,9 +203,10 @@ export class CustomersService {
 
     await this.repo.softRemove(customer);
 
-    this.realtimeService.emitCustomerDeleted(id);
     // Invalidate caches
     await this.cacheService.invalidateForMutation([id]);
+
+    this.realtimeService.emitCustomerDeleted(id);
   }
 
   // --- BULK DELETE ---

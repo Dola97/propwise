@@ -27,6 +27,16 @@ export class CustomerCacheService {
    * Increment version to invalidate all list caches.
    * Old versioned keys expire naturally via TTL.
    */
+  /*
+
+- Increment version to invalidate all list caches.
+- Note: Non-atomic read+write. Concurrent mutations could lose one increment.
+- Acceptable because TTL (60s) self-heals stale data. For strict consistency,
+- use Redis INCR directly.
+Fix: Use Redis INCR or implement proper locking mechanism.
+
+*/
+
   async invalidateListCaches(): Promise<void> {
     const current = await this.getVersion();
     await this.cache.set(VERSION_KEY, current + 1, 0);

@@ -94,6 +94,21 @@ An admin toggle switches between Public and Internal mode:
 
 ---
 
+## Server/Client Component Split
+
+- **`page.tsx`** is an async Server Component — prefetches the first page of customers and hydrates TanStack Query via `HydrationBoundary`. No loading spinner on initial load.
+- **`layout.tsx`** is a Server Component — handles metadata, fonts, and static HTML shell.
+- **`AppProviders`** is the single Client Component boundary — wraps all providers (TanStack Query, InternalMode, Socket.IO, Toasts).
+- Interactive components (`CustomerTable`, `Header` toggle, modals) use `'use client'` only where needed.
+
+## Error Handling
+
+- **Axios response interceptor** handles non-recoverable errors globally (500s → toast, network failures → toast, 401 → toast + redirect).
+- **Recoverable errors** (400 validation, 409 conflict) pass through to components via `useMutationErrors()` hook.
+- **`DatabaseExceptionFilter`** (backend) catches PostgreSQL constraint violations (duplicate email → 409 Conflict) and returns consistent error shapes.
+- **`react-hook-form` + Zod** validates client-side before hitting the API.
+- All API errors follow the same shape: `{ message: string[], error: string, statusCode: number }`.
+
 ## Caching Strategy
 
 ### Redis (Server)
@@ -137,18 +152,6 @@ Frontend listens via `useCustomerEvents` hook → shows toast notification → i
 | Explicit DTOs (no class-transformer groups) | New entity fields don't accidentally leak    | More boilerplate than group-based serialization                          |
 | Socket payloads always non-sensitive        | No risk of sensitive data over websockets    | Frontend must refetch via HTTP to get full data                          |
 | `x-internal` as feature flag (not auth)     | Demonstrates conscious data exposure control | Real production would use JWT claims or mTLS                             |
-
-/\*\*
-
-- Increment version to invalidate all list caches.
-- Note: Non-atomic read+write. Concurrent mutations could lose one increment.
-- Acceptable because TTL (60s) self-heals stale data. For strict consistency,
-- use Redis INCR directly.
-  \*/
-  async invalidateListCaches(): Promise<void> {
-  const current = await this.getVersion();
-  await this.cache.set(VERSION_KEY, current + 1, 0);
-  }
 
 ```
 
