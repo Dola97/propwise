@@ -1,10 +1,10 @@
-import { CustomerFormData } from "@/components/features/customers/customer-form";
 import api from "./api";
 import type {
     Customer,
     CustomersQueryParams,
     PaginatedResponse,
 } from "@/types/customer";
+import { CustomerFormData } from "./schemas/customer.schema";
 
 export async function fetchCustomers(
     params: CustomersQueryParams = {},
