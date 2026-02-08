@@ -142,13 +142,18 @@ Frontend listens via `useCustomerEvents` hook → shows toast notification → i
 
 ---
 
-### File summary
-```
+# How I Used AI During This Project
 
-README.md (NEW)
-packages/backend/.env.example (NEW)
-packages/frontend/.env.example (NEW)
-src/components/ui/skeleton.tsx (NEW)
-src/components/layout/internal-banner.tsx (NEW)
-src/components/customers/customer-table.tsx (MODIFIED — skeleton import)
-src/app/page.tsx (MODIFIED — banner added)
+1. I initially used Claude as my AI assistant.
+2. I created a project with clear instructions and added Markdown files that documented the best practices I wanted the AI to follow.
+3. I asked the AI to break the project down into smaller, well-defined tasks.
+4. The first task was initializing a monorepo using **pnpm** and defining the overall project structure.
+5. Next, I asked the AI to generate a `docker-compose` file to set up the project infrastructure.
+6. Using that file, I configured **PostgreSQL** and **Redis** for the project.
+7. Once the infrastructure was ready, I continued building the project by asking the AI to break the remaining work into incremental tasks.
+8. After completing every 3–4 tasks (depending on complexity), I paused and reviewed progress.
+9. I then asked the AI to generate Markdown progress files documenting the current state of the project, allowing me to start a new conversation without losing context.
+10. This approach helped prevent hallucinations and ensured consistent continuity throughout development.
+11- and sometimes when im not sure of the code that the AI generated i asked the AI to explain the code to me or use gpt to make sure that the code is correct or the way of implementing the feature is correct
+12- if any types issue or any other issue i tried to solved by myself to make sure that im not spending alot of credit on the AI and never lost the context of the project
+```
