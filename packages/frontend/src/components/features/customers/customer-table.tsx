@@ -260,8 +260,8 @@ export function CustomerTable() {
                                     )}
                                 <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500">
                                     {new Date(
-                                        customer.created_at,
-                                    ).toLocaleDateString()}
+                                        customer?.created_at,
+                                    )?.toLocaleDateString()}
                                 </td>
                                 <td className="whitespace-nowrap px-4 py-3 text-right text-sm">
                                     <div className="flex justify-end gap-3">

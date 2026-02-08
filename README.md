@@ -138,6 +138,18 @@ Frontend listens via `useCustomerEvents` hook → shows toast notification → i
 | Socket payloads always non-sensitive        | No risk of sensitive data over websockets    | Frontend must refetch via HTTP to get full data                          |
 | `x-internal` as feature flag (not auth)     | Demonstrates conscious data exposure control | Real production would use JWT claims or mTLS                             |
 
+/\*\*
+
+- Increment version to invalidate all list caches.
+- Note: Non-atomic read+write. Concurrent mutations could lose one increment.
+- Acceptable because TTL (60s) self-heals stale data. For strict consistency,
+- use Redis INCR directly.
+  \*/
+  async invalidateListCaches(): Promise<void> {
+  const current = await this.getVersion();
+  await this.cache.set(VERSION_KEY, current + 1, 0);
+  }
+
 ```
 
 ---

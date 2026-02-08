@@ -24,7 +24,9 @@ export class UpdateCustomerDto {
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  @Matches(/^\+?[0-9\s\-()]{7,20}$/)
+  @Matches(/^\+?[0-9\s\-()]{7,20}$/, {
+    message: 'phone_number must be a valid phone number',
+  })
   phone_number?: string;
 
   // Sensitive — only persisted if x-internal: true

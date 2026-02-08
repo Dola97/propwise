@@ -201,10 +201,9 @@ export class CustomersService {
       throw new NotFoundException('Customer not found');
     }
 
-    this.realtimeService.emitCustomerDeleted(id);
-
     await this.repo.softRemove(customer);
 
+    this.realtimeService.emitCustomerDeleted(id);
     // Invalidate caches
     await this.cacheService.invalidateForMutation([id]);
   }
@@ -218,11 +217,18 @@ export class CustomersService {
       throw new NotFoundException('No customers found for given IDs');
     }
 
+    // Check for missing IDs
+    const foundIds = new Set(customers.map((c) => c.id));
+    const missingIds = ids.filter((id) => !foundIds.has(id));
+
+    if (missingIds.length > 0) {
+      throw new NotFoundException(
+        `Customers not found: ${missingIds.join(', ')}`,
+      );
+    }
+
     await this.repo.softRemove(customers);
-
     this.realtimeService.emitBulkDeleted(ids);
-
-    // Invalidate caches
     await this.cacheService.invalidateForMutation(ids);
   }
 
